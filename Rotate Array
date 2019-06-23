@@ -1,0 +1,50 @@
+# Given an array, rotate the array to the right by k steps, where k is non-negative.
+# Example 1:
+# Input: [1,2,3,4,5,6,7] and k = 3
+# Output: [5,6,7,1,2,3,4]
+# Explanation:
+# rotate 1 steps to the right: [7,1,2,3,4,5,6]
+# rotate 2 steps to the right: [6,7,1,2,3,4,5]
+# rotate 3 steps to the right: [5,6,7,1,2,3,4]
+
+class Solution(object):
+    def rotateCyclic(self, nums, k):
+
+        def switch(idx, value):
+            newIdx = (idx + k) % len(nums)
+            valueAtNewIdx = nums[newIdx]
+            nums[newIdx] = value
+            return newIdx, valueAtNewIdx
+        
+        if k == len(nums):
+            return nums
+        
+        numOfOps = 0
+        idx = 0
+        while numOfOps < len(nums):
+            newIdx, valueAtNewIdx = switch(idx, nums[idx])
+            numOfOps += 1
+            while newIdx != idx:
+                newIdx,valueAtNewIdx = switch(newIdx, valueAtNewIdx)
+                numOfOps += 1
+            idx += 1
+        return nums
+# Runtime: 52 ms, faster than 60.20% of Python online submissions for Rotate Array.
+# Memory Usage: 12 MB, less than 84.44% of Python online submissions for Rotate Array.
+    
+    def rotate(self, nums, k):
+        
+        def reverse(arr, start, end):
+            i = 0
+            while start + i < end - i and start + i < len(arr) and end < len(arr):
+                temp = arr[start + i]
+                arr[start + i] = arr[end - i]
+                arr[end - i] = temp
+                i += 1
+        
+        reverse(nums, 0, len(nums)-1)
+        reverse(nums, 0, k % len(nums) - 1)
+        reverse(nums, k % len(nums), len(nums)-1)
+        return nums
+# Runtime: 48 ms, faster than 81.64% of Python online submissions for Rotate Array.
+# Memory Usage: 12 MB, less than 82.82% of Python online submissions for Rotate Array.
