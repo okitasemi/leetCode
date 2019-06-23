@@ -1,0 +1,15 @@
+# Given an array of integers, find if the array contains any duplicates.
+# Your function should return true if any value appears at least twice in the array, and it should return false if every element is distinct.
+
+class Solution(object):
+    def containsDuplicateWithSet(self, nums):
+        numSet = set()
+        for num in nums:
+            if num in numSet:
+                return True
+            numSet.add(num)
+        return False
+
+# Runtime: 104 ms, faster than 83.34% of Python online submissions for Contains Duplicate.
+# Memory Usage: 17.1 MB, less than 76.18% of Python online submissions for Contains Duplicate.
+        
