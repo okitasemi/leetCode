@@ -1,0 +1,42 @@
+# Given an array of integers, return indices of the two numbers such that they add up to a specific target.
+# You may assume that each input would have exactly one solution, and you may not use the same element twice.
+# Example:
+# Given nums = [2, 7, 11, 15], target = 9,
+# Because nums[0] + nums[1] = 2 + 7 = 9,
+# return [0, 1].
+
+class Solution(object):
+    def twoSum(self, nums, target):
+        """
+        :type nums: List[int]
+        :type target: int
+        :rtype: List[int]
+        """
+        result = []
+        targetDict = {}
+        i = 0
+        while i < len(nums):
+            diff = target - nums[i]
+            if diff in targetDict:
+                result.append(targetDict[diff])
+                result.append(i)
+                return result
+            targetDict[nums[i]] = i
+            i += 1
+            
+    def twoSumWithSort(self, nums, target):
+        numsWithIdx = []
+        i = 0
+        while i < len(nums):
+            numsWithIdx.append((nums[i], i))
+            i += 1
+        numsWithIdx.sort(key=lambda x:x[0])
+        i = 0
+        j = len(nums)-1
+        while i < j:
+            if numsWithIdx[i][0] + numsWithIdx[j][0] == target:
+                return [numsWithIdx[i][1], numsWithIdx[j][1]]
+            elif numsWithIdx[i][0] + numsWithIdx[j][0] < target:
+                i += 1
+            else:
+                j -= 1
