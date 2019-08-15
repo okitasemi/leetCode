@@ -1,0 +1,36 @@
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def isValidBST(self, root):
+        queue = [(root, -10000000000, 10000000000)]
+        while queue:
+            nodeTuple = queue.pop(0)
+            node = nodeTuple[0]
+            localMin = nodeTuple[1]
+            localMax = nodeTuple[2]
+            if node:
+                if self.isNodeValid(nodeTuple):
+                    queue.append((node.left, localMin, node.val))
+                else:
+                    return False
+                if self.isNodeValid(nodeTuple):
+                    queue.append((node.right, node.val, localMax))
+                else:
+                    return False
+        return True
+        
+    def isNodeValid(self, nodeTuple):
+        node = nodeTuple[0]
+        localMin = nodeTuple[1]
+        localMax = nodeTuple[2]
+        if node.val <= localMin or node.val >= localMax:
+            return False
+        return True
+        
+                
+     
