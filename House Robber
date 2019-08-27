@@ -1,0 +1,25 @@
+class Solution(object):
+    def rob(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        
+        if not nums:
+            return 0
+        
+        # Keep track of the max up to i-2 and i-1
+        # New max = max of (maxAtIMinus2 + newElement, maxAtIMinus1)
+        maxAtIMinus2 = 0
+        maxAtIMinus1 = nums[0]
+        for i in range(1, len(nums)):
+            if maxAtIMinus2 + nums[i] >= maxAtIMinus1:
+                newSum = maxAtIMinus2 + nums[i]
+            else:
+                newSum = maxAtIMinus1
+            maxAtIMinus2 = maxAtIMinus1
+            maxAtIMinus1 = newSum
+        return maxAtIMinus1
+        
+# Runtime: 16 ms, faster than 79.57% of Python online submissions for House Robber.
+# Memory Usage: 11.6 MB, less than 76.60% of Python online submissions for House Robber.
