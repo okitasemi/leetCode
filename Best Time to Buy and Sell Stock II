@@ -1,0 +1,38 @@
+# Say you have an array for which the ith element is the price of a given stock on day i.
+# Design an algorithm to find the maximum profit. You may complete as many transactions as you like (i.e., buy one and sell one share of the stock multiple times).
+# Note: You may not engage in multiple transactions at the same time (i.e., you must sell the stock before you buy again).
+
+class Solution(object):
+    def maxProfit(self, prices):
+        """
+        :type prices: List[int]
+        :rtype: int
+        """
+        # Buying at local min and selling at local max generates more profit
+        # than only buying at overall min and selling at overall max
+        # Consider [a, b, c, d], a<b, b>c, c<d.
+        # If a is overall min and d is overall max, (b-a)+(d-c) = (b-c)+(d-a)> (d-a)
+        # e.g. [1, 5, 3, 6], (5-1)+(6-3) > (6-1)
+        
+        profit = 0
+        if not prices:
+            return profit
+        
+        localMin = prices[0]
+        localMax = prices[0]
+        for i in range(1, len(prices)):
+            if prices[i] < localMax:
+                profit += localMax - localMin
+                localMin = prices[i]
+                
+            if prices[i] < localMin:
+                localMin = prices[i]
+            else:
+                localMax = prices[i]
+        profit += localMax - localMin
+        return profit
+
+# Runtime: 44 ms, faster than 82.49% of Python online submissions for Best Time to Buy and Sell Stock II.
+# Memory Usage: 12.6 MB, less than 44.19% of Python online submissions for Best Time to Buy and Sell Stock II.
+
+            
