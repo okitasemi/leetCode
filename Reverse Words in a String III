@@ -1,0 +1,33 @@
+# Given a string, you need to reverse the order of characters in each word within a sentence 
+# while still preserving whitespace and initial word order.
+# Example 1: 
+# Input: "Let's take LeetCode contest"
+# Output: "s'teL ekat edoCteeL tsetnoc"
+
+class Solution(object):
+    def reverseWords(self, s):
+        """
+        :type s: str
+        :rtype: str
+        """
+        
+        wordList = s.split(" ")
+        for i in range(len(wordList)):
+            wordList[i] = self.reverseWord(wordList[i])
+        return " ".join(wordList)
+            
+    def reverseWord(self, word):
+        charList = list(word)
+        for i in range(int(len(word) / 2)):
+            temp = charList[i]
+            charList[i] = charList[len(word) - i - 1]
+            charList[len(word) - i - 1] = temp
+        return ''.join(charList)
+
+# NOTE:
+# Difference between
+# 1. for word in wordList: function(word)
+# and
+# 2. for i in range(len(wordList)): function(wordList[i])
+# In 1, a new reference is created for word and wordList is not affected
+# In 2, wordList[i] is affected
