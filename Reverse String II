@@ -1,0 +1,25 @@
+# Given a string and an integer k, reverse the first k characters for every 2k characters counting from the start of the string. 
+# If there are less than k characters left, reverse all of them. 
+# If there are less than 2k but greater than or equal to k characters, reverse the first k characters and leave the other untouched.
+# Example: Input: s = "abcdefg", k = 2. Output: "bacdfeg"
+
+class Solution(object):
+    def reverseStr(self, s, k):
+        """
+        :type s: str
+        :type k: int
+        :rtype: str
+        """
+        sList = list(s)
+        startI = 0
+        endI = min(k, len(s))
+        while startI < len(s):
+            for i in range(startI, int((endI + startI) / 2)):
+                temp = sList[i]
+                sList[i] = sList[endI - i + startI - 1]
+                sList[endI - i + startI - 1] = temp
+            startI += 2 * k
+            endI = min(startI + k, len(s))
+        result = ''.join(sList)
+        return result
+            
