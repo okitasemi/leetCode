@@ -1,0 +1,44 @@
+# Given a sorted array nums, remove the duplicates in-place such that each element appear only once and return the new length.
+# Do not allocate extra space for another array, you must do this by modifying the input array in-place with O(1) extra memory.
+
+
+--------------------------
+Ver 1: Pop the duplicate element
+Slower because every time we do so we need to shift the rest of the array
+--------------------------
+
+class Solution(object):
+    def removeDuplicates(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        i = 1
+        while i < len(nums):
+            if nums[i] == nums[i-1]:
+                nums.pop(i)
+                i -= 1
+            i += 1
+        return len(nums)
+
+
+--------------------------
+Ver 2: Two pointers
+Faster because we don't need to keep shifting the array. 
+But remaining array has unused element (which might be a problem in another type of problem.)
+--------------------------
+
+class Solution(object):
+    def removeDuplicates(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        i, j = 0, 0
+        while j < len(nums):
+            if nums[i] != nums[j]:
+                nums[i + 1] = nums[j]
+                i += 1
+            j += 1
+        return i + 1
+        
