@@ -1,0 +1,37 @@
+# Say you have an array for which the ith element is the price of a given stock on day i.
+# Design an algorithm to find the maximum profit. You may complete as many transactions as you like (ie, buy one and sell one share of the stock multiple times) with the following restrictions:
+# You may not engage in multiple transactions at the same time (ie, you must sell the stock before you buy again).
+# After you sell your stock, you cannot buy stock on next day. (ie, cooldown 1 day)
+# Example:
+# Input: [1,2,3,0,2]
+# Output: 3 
+# Explanation: transactions = [buy, sell, cooldown, buy, sell]
+
+
+class Solution(object):
+    def maxProfit(self, prices):
+        """
+        :type prices: List[int]
+        :rtype: int
+        """
+
+    # At each price, keep track of the balance for each possible action:
+    # Buy stock (subtract price from previous "wait w/o stock", 
+    # b/c we can only buy if we don't currently hold stock and did not sell on previous day.)
+    # Wait with stock (max of previous buy & previous wait w/stock)
+    # Wait without stock (max of previous wait w/o stock & previous sell)
+    # Sell stock (add price to max of previous buy & previous hold)
+    
+        Balance = [float('-inf'), float('-inf'), 0, 0]
+        for i in range(len(prices)):
+            buy = Balance[2] - prices[i]
+            waitWStock = max(Balance[0], Balance[1])
+            waitWOStock = max(Balance[2], Balance[3])
+            sell = max(Balance[0], Balance[1]) + prices[i]
+            Balance = [buy, waitWStock, waitWOStock, sell]
+        return max(Balance[2], Balance[3])
+    
+    
+# Runtime: 20 ms, faster than 93.57% of Python online submissions for Best Time to Buy and Sell Stock with Cooldown.
+# Memory Usage: 11.8 MB, less than 92.31% of Python online submissions for Best Time to Buy and Sell Stock with Cooldown.
+        
