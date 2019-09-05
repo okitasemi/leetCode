@@ -1,0 +1,37 @@
+# Given a non-empty array of integers, every element appears twice except for one. Find that single one.
+# Note: Your algorithm should have a linear runtime complexity. Could you implement it without using extra memory?
+
+
+-----------------------
+Ver 1:  Use a set
+Pros: Short code. Time complexity O(n)
+Cons: Space complexity O(n)
+-----------------------
+class Solution(object):
+    def singleNumber(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        return(sum(set(nums)) * 2 - sum(nums))
+        
+
+-----------------------
+Ver 2:  Use ^ Binary XOR
+Pros: Time complexity O(n), Space complexity O(1)
+Cons: No cons. I just always forget about this method...
+-----------------------
+class Solution(object):
+    def singleNumber(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        result = nums[0]
+        for num in nums[1:]:
+            result ^= num
+        return result
+
+
+# Runtime: 68 ms, faster than 75.01% of Python online submissions for Single Number.
+# Memory Usage: 13.6 MB, less than 67.57% of Python online submissions for Single Number.
