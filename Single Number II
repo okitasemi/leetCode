@@ -1,0 +1,65 @@
+# Given a non-empty array of integers, every element appears three times except for one, which appears exactly once. 
+# Find that single one.
+# Note: Your algorithm should have a linear runtime complexity. Could you implement it without using extra memory?
+
+
+------------------------
+Ver 1: Use a set
+Pros: Short code. Time Complexity O(n)
+Cons: Space Complexity O(n)
+------------------------
+
+class Solution(object):
+    def singleNumber(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        
+        return((sum(set(nums)) * 3 - sum(nums)) / 2)
+        
+
+------------------------
+Ver 2: Convert numbers to binary, keep track of the number of 1's in each position, then mod by 3. 
+Pros: Time Complexity O(n), Space Complexity O(1)
+Cons: Complicated
+------------------------
+
+class Solution(object):
+    def singleNumber(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+
+        positive = [0 for i in range(32)]
+        negative = [0 for i in range(32)]
+        for num in nums:
+            if num > 0:
+                binString = bin(num)[2:]
+                for j in range(len(binString)):
+                    positive[32 - (len(binString) - j)] += int(binString[j])
+            else:
+                binString = bin(num)[3:]
+                for j in range(len(binString)):
+                    negative[32 - (len(binString) - j)] += int(binString[j])
+                    
+        pResult = '0b'
+        for digit in positive:
+            digit %= 3
+            pResult += str(digit)
+        nResult = '-0b'
+        for digit in negative:
+            digit %= 3
+            nResult += str(digit)
+            
+        if int(nResult, 2) == 0:
+            return int(pResult, 2)
+        else:
+            return int(nResult, 2)
+            
+            
+# Runtime: 208 ms, faster than 6.00% of Python online submissions for Single Number II.
+# Memory Usage: 13 MB, less than 90.91% of Python online submissions for Single Number II.
+
+        
