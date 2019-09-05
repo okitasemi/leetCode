@@ -18,6 +18,10 @@ class Solution(object):
         
         return((sum(set(nums)) * 3 - sum(nums)) / 2)
         
+        
+# Runtime: 36 ms, faster than 96.42% of Python online submissions for Single Number II.
+# Memory Usage: 13.7 MB, less than 54.55% of Python online submissions for Single Number II.
+
 
 ------------------------
 Ver 2: Convert numbers to binary, keep track of the number of 1's in each position, then mod by 3. 
@@ -58,7 +62,7 @@ class Solution(object):
         else:
             return int(nResult, 2)
             
-            
+          
 # Runtime: 208 ms, faster than 6.00% of Python online submissions for Single Number II.
 # Memory Usage: 13 MB, less than 90.91% of Python online submissions for Single Number II.
 
