@@ -12,7 +12,9 @@
 
 
 --------------------------
-Ver 1: DFS
+Ver 1: DFS (recursive)
+Time O(n)
+Space O(n) 
 --------------------------
 class Solution(object):
     def minDepth(self, root):
@@ -44,7 +46,9 @@ class Solution(object):
 # Memory Usage: 15 MB, less than 15.38% of Python online submissions for Minimum Depth of Binary Tree.
         
 --------------------------
-Ver 2: BFS
+Ver 2: BFS (using a queue)
+Time O(n), but can stop once the closest leaf is reached
+Space O(n)
 --------------------------
 
 class Solution(object):
