@@ -1,0 +1,71 @@
+# Given a binary tree, find its minimum depth.
+# The minimum depth is the number of nodes along the shortest path from the root node down to the nearest leaf node.
+# Note: A leaf is a node with no children.
+
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+
+
+--------------------------
+Ver 1: DFS
+--------------------------
+class Solution(object):
+    def minDepth(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        if not root:
+            return 0
+        depth = self.traverse(root)
+        return depth
+        
+    def traverse(self, node):
+        depthL, depthR = 0, 0
+        if node.left:
+            depthL = self.traverse(node.left)
+            if node.right:
+                depthR = self.traverse(node.right)
+            else:
+                depthR = depthL
+        else:
+            if node.right:
+                depthR = self.traverse(node.right)
+                depthL = depthR
+        return min(depthL, depthR) + 1
+        
+        
+# Runtime: 32 ms, faster than 72.99% of Python online submissions for Minimum Depth of Binary Tree.
+# Memory Usage: 15 MB, less than 15.38% of Python online submissions for Minimum Depth of Binary Tree.
+        
+--------------------------
+Ver 2: BFS
+--------------------------
+
+class Solution(object):
+    def minDepth(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        queue = [(root, 0)]
+        while queue:
+            topTuple = queue.pop(0)
+            topNode = topTuple[0]
+            currentDepth = topTuple[1]
+            if topNode:
+                currentDepth += 1
+                if not topNode.left and not topNode.right:
+                    return currentDepth
+                queue.append((topNode.left, currentDepth))
+                queue.append((topNode.right, currentDepth))
+        return currentDepth
+       
+
+# Runtime: 24 ms, faster than 97.81% of Python online submissions for Minimum Depth of Binary Tree.
+# Memory Usage: 14.7 MB, less than 41.03% of Python online submissions for Minimum Depth of Binary Tree.
