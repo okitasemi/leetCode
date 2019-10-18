@@ -1,0 +1,72 @@
+# Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).
+# For example, this binary tree [1,2,2,3,4,4,3] is symmetric.
+# But [1,2,2,null,3,null,3] is not.
+
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+
+    def isSymmetricRecursive(self, root):
+        if not root:
+            return True
+        return self.traverseTree(root.left, root.right)
+    
+    def traverseTree(self, leftNode, rightNode):
+        if leftNode:
+            if not rightNode:
+                return False
+            if leftNode.val != rightNode.val:
+                return False
+            else:
+                return self.traverseTree(leftNode.left, rightNode.right) and self.traverseTree(leftNode.right, rightNode.left)
+        else:
+            if rightNode:
+                return False
+        return True
+    
+# Runtime: 16 ms, faster than 93.58% of Python online submissions for Symmetric Tree.
+# Memory Usage: 12 MB, less than 58.70% of Python online submissions for Symmetric Tree.
+
+# ------------------------------------------
+    
+    def isSymmetricIterative(self, root):
+        """
+        :type root: TreeNode
+        :rtype: bool
+        """
+        if not root:
+            return True
+        leftTreeQ = [root.left]
+        rightTreeQ = [root.right]
+        
+        while leftTreeQ and rightTreeQ:
+            leftTopNode = leftTreeQ.pop(0)
+            rightTopNode = rightTreeQ.pop(0)
+            
+            if leftTopNode:
+                if rightTopNode:
+                    if leftTopNode.val != rightTopNode.val:
+                        return False
+                else:
+                    return False
+            else:
+                if rightTopNode:
+                    return False
+                
+            if leftTopNode:
+                leftTreeQ.append(leftTopNode.left)
+                leftTreeQ.append(leftTopNode.right)
+                rightTreeQ.append(rightTopNode.right)
+                rightTreeQ.append(rightTopNode.left)
+                
+        if leftTreeQ or rightTreeQ:
+            return False
+        return True  
+        
+# Runtime: 20 ms, faster than 76.57% of Python online submissions for Symmetric Tree.
+# Memory Usage: 11.9 MB, less than 89.13% of Python online submissions for Symmetric Tree.
