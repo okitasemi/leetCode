@@ -1,0 +1,83 @@
+"""
+Given a singly linked list L: L0→L1→…→Ln-1→Ln,
+reorder it to: L0→Ln→L1→Ln-1→L2→Ln-2→…
+You may not modify the values in the list's nodes, only nodes itself may be changed.
+
+Example 1:
+Given 1->2->3->4, reorder it to 1->4->2->3.
+Example 2:
+Given 1->2->3->4->5, reorder it to 1->5->2->4->3.
+"""
+
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:        
+    def reorderListRecursive(self, head: ListNode) -> None:
+        if not head:
+            return
+        counter = head
+        length = 1
+        while counter.next:
+            counter = counter.next
+            length += 1
+            
+        #take a start node and count, return new start and tail nodes.
+        def reorder(start, count):
+            if length % 2 == 0:
+                if count == length / 2:
+                    return start, start.next
+            else:
+                if count == (length + 1) / 2:
+                    return start, start
+            midHead, midTail = reorder(start.next, count + 1)
+            tail = midTail.next
+            afterTail = tail.next
+            start.next = tail
+            tail.next = midHead
+            midTail.next = afterTail
+            return start, midTail
+        
+        reorder(head, 1)
+        
+    def reorderList(self, head: ListNode) -> None:
+        if not head or not head.next or not head.next.next:
+            return
+        
+        # Find mid point
+        fast, slow = head, head
+        while fast and fast.next:
+            fast = fast.next.next
+            slow = slow.next
+
+        # Reverse the second half of the list
+        midHead = slow.next
+        slow.next = None
+        prev = None
+        while midHead:
+            nxt = midHead.next
+            midHead.next = prev
+            prev = midHead
+            midHead = nxt
+        
+        # Merge the first and second halves of the list
+        midHead = prev
+        orgHead = head
+        while midHead:
+            orgNxt = orgHead.next
+            midNxt = midHead.next
+            orgHead.next = midHead
+            midHead.next = orgNxt
+            orgHead = orgNxt
+            midHead = midNxt
+            
+"""
+O(n) time, O(1) space.
+
+Runtime: 156 ms, faster than 5.36% of Python3 online submissions for Reorder List.
+Memory Usage: 21.9 MB, less than 50.00% of Python3 online submissions for Reorder List.
+"""
