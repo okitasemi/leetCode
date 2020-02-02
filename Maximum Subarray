@@ -57,7 +57,7 @@ class Solution(object):
         return currentMax
 
     # Runtime: 64 ms, faster than 83.45% of Python3 online submissions for Maximum Subarray.
-    # Memory Usage: 13.5 MB, less than 78.86% of Python3 online submissions for Maximum Subarray.
+    # Memory Usage: 13.4 MB, less than 95.93% of Python3 online submissions for Maximum Subarray.
     def maxSubArray(self, nums: List[int]) -> int:
         maxSum, currentSum = float('-inf'), float('-inf')
         for num in nums:
