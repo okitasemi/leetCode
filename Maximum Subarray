@@ -42,7 +42,7 @@ class Solution(object):
         return maxVal
     
     # Faster than 75%, less than 90%
-    def maxSubArray(self, nums):
+    def maxSubArrayOld(self, nums):
         currentMax = self.findMax(nums)
         currentSum = nums[0]
         i = 1
@@ -55,3 +55,12 @@ class Solution(object):
                     currentMax = currentSum
             i += 1
         return currentMax
+
+    # Runtime: 64 ms, faster than 83.45% of Python3 online submissions for Maximum Subarray.
+    # Memory Usage: 13.5 MB, less than 78.86% of Python3 online submissions for Maximum Subarray.
+    def maxSubArray(self, nums: List[int]) -> int:
+        maxSum, currentSum = float('-inf'), float('-inf')
+        for num in nums:
+            currentSum = max(currentSum + num, num)
+            maxSum = max(maxSum, currentSum)
+        return maxSum
