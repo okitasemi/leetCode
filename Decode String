@@ -34,8 +34,6 @@ s = "2[abc]3[cd]ef", return "abcabccdcdcdef".
         return "".join(stack)
         
 """
-2[2[2[2[2[2[a]]]]]] => aa, aaaa, aaaaaaaa => 
-n = initial length, k = max(all repeat numbers)
 O(decompressed length) time because we have to go over the final result at least once.
 O(decompressed length) space because we have to store the entire result in "temp" in the worst case.
 
