@@ -1,0 +1,55 @@
+"""
+Palindrome Permutation II
+Given a string s, return all the palindromic permutations (without duplicates) of it. Return an empty list if no palindromic permutation could be form.
+
+Example1
+Input: s = "aabb"
+Output: ["abba","baab"]
+
+Example2
+Input: "abc"
+Output: []
+"""
+
+from collections import Counter
+class Solution:
+    """
+    @param s: the given string
+    @return: all the palindromic permutations (without duplicates) of it
+    """
+    def generatePalindromes(self, s):
+        
+        def makeString(current, currentCount):
+            if len(current) == int(len(s) / 2):
+                result.append(current)
+            else:
+                for char in currentCount:
+                    if currentCount[char] > 0:
+                        currentCount[char] -= 1 
+                        makeString(current + char, currentCount)
+                        currentCount[char] += 1
+                        
+        result = []
+        charCount = Counter(s)
+        oddCount, oddChar = 0, ""
+        for char in charCount:
+            if charCount[char] % 2 == 1:
+                oddCount += 1 
+                oddChar = char
+                charCount[char] -= 1
+                if oddCount > 1:
+                    return result
+            charCount[char] = int(charCount[char] / 2)
+            
+        makeString("", charCount)
+        for i in range(len(result)):
+            result[i] = result[i] + oddChar + result[i][::-1]
+        return result
+        
+"""
+n = num of characters
+O(n!) time for generating permutations.
+O(n) space for counter.
+Your submission beats 99.39% Submissions!
+"""
+    
