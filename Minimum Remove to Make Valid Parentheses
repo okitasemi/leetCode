@@ -2,7 +2,8 @@ class Solution:
     """
     Runtime: 188 ms, faster than 27.17% of Python3 online submissions for Minimum Remove to Make Valid Parentheses.
     Memory Usage: 15.7 MB, less than 100.00% of Python3 online submissions for Minimum Remove to Make Valid Parentheses.
-    O(n) time. O(n) space. Two pass
+    O(n) time. O(n) space. Two pass.
+    Observe that we can remove excessive ) first, then reverse the array to remove excessive (. 
     """
     def minRemoveToMakeValidTwoPass(self, s: str) -> str:
         stack = []
