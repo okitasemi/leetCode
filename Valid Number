@@ -1,0 +1,73 @@
+"""
+Validate if a given string can be interpreted as a decimal number.
+Some examples:
+"0" => true
+" 0.1 " => true
+"abc" => false
+"1 a" => false
+"2e10" => true
+" -90e3   " => true
+" 1e" => false
+"e3" => false
+" 6e-1" => true
+" 99e2.5 " => false
+"53.5e93" => true
+" --6 " => false
+"-+3" => false
+"95a54e53" => false
+
+Note: It is intended for the problem statement to be ambiguous. 
+You should gather all requirements up front before implementing one. 
+However, here is a list of characters that can be in a valid decimal number:
+
+Numbers 0-9
+Exponent - "e"
+Positive/negative sign - "+"/"-"
+Decimal point - "."
+Of course, the context of these characters also matters in the input.
+"""
+
+class Solution:
+    """
+    Runtime: 20 ms, faster than 98.93% of Python3 online submissions for Valid Number.
+    Memory Usage: 12.8 MB, less than 100.00% of Python3 online submissions for Valid Number.
+    """
+    def isNumberFloat(self, s: str) -> bool:
+        try:
+            float(s)
+            return True
+        except:
+            return False
+        
+    """
+    Runtime: 32 ms, faster than 67.49% of Python3 online submissions for Valid Number.
+    Memory Usage: 12.8 MB, less than 100.00% of Python3 online submissions for Valid Number.
+    
+    Using Deterministic Finite Automaton algorithm. 
+    """
+    def isNumberDFA(self, s):
+        states = [
+            {" ": 0, ".": 1, "sign": 3, "numeric": 4}, #i = 0, initial state, everything is allowed
+            {"numeric": 6},                            #i = 1, after ".", only numeric is allowed
+            {"sign": 7, "numeric": 8},                 #i = 2, after numeric+"e", +/- sign or numeric is allowed
+            {".": 1, "numeric": 4},                    #i = 3, after +/- sign, only "." or numeric is allowed
+            {" ": 5, ".": 6, "e": 2, "numeric": 4},    #i = 4, after numeric, only space, ".", "e", or numeric is allowed
+            {" ": 5},                                  #i = 5, after space, only space is allowed
+            {" ": 5, "e": 2, "numeric": 6},            #i = 6, after "."+numeric, space, e, or numeric is allowed 
+            {"numeric": 8},                            #i = 7, after numeric+"e"+sign, only numeric is allowed
+            {" ": 6, "numeric": 8}                     #i = 8, after numeric+"e"+numeric, only numeric or space is allowed
+        ]
+        i = 0
+        for char in s:
+            if char == "+" or char == "-":
+                char = "sign"
+            if char >= "0" and char <= "9":
+                char = "numeric"
+            if char not in states[i]:
+                return False
+            i = states[i][char]
+            
+        if i not in {4, 5, 6, 8}:                #We cannot end with sign, e, or a lone ".", so we have to end in these 4 states.
+            return False
+        return True
+        
