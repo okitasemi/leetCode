@@ -1,0 +1,54 @@
+class Solution:
+    """
+    Runtime: 188 ms, faster than 27.17% of Python3 online submissions for Minimum Remove to Make Valid Parentheses.
+    Memory Usage: 15.7 MB, less than 100.00% of Python3 online submissions for Minimum Remove to Make Valid Parentheses.
+    O(n) time. O(n) space. Two pass
+    """
+    def minRemoveToMakeValidTwoPass(self, s: str) -> str:
+        stack = []
+        numClose= 0
+        for char in s[::-1]:
+            if char != "(" and char != ")":
+                stack.append(char)
+            elif char == ")":
+                stack.append(char)
+                numClose += 1
+            else:
+                if numClose > 0:
+                    stack.append(char)
+                    numClose -= 1
+        revStack = []
+        numOpen = 0
+        while stack:
+            popped = stack.pop()
+            if popped != "(" and popped != ")":
+                revStack.append(popped)
+            elif popped == "(":
+                revStack.append(popped)
+                numOpen += 1
+            else:
+                if numOpen > 0:
+                    revStack.append(popped)
+                    numOpen -= 1
+        return revStack
+                
+                
+    """
+    Runtime: 132 ms, faster than 62.42% of Python3 online submissions for Minimum Remove to Make Valid Parentheses.
+    Memory Usage: 16 MB, less than 100.00% of Python3 online submissions for Minimum Remove to Make Valid Parentheses.
+    O(n) time. O(n) space. Only process () first and use stack to keep track of indicex.
+    """
+    def minRemoveToMakeValid(self, s):
+        stack = []
+        for i, char in enumerate(s):
+            if char == "(":
+                stack.append(i)
+            elif char == ")":
+                if stack and s[stack[-1]] == "(":
+                    stack.pop()
+                else:
+                    stack.append(i)
+        idxSet = set(stack)
+        result = [char for i, char in enumerate(s) if i not in idxSet]
+        return result
+        
