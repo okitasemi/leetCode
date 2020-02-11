@@ -1,0 +1,74 @@
+"""
+Naive method.
+Update: O(1)
+Sum: O(n)
+"""
+class NumArrayOld:
+
+    def __init__(self, nums: List[int]):
+        self.nums = nums
+
+    def update(self, i: int, val: int) -> None:
+        self.nums[i] = val
+
+    def sumRange(self, i: int, j: int) -> int:
+        result = sum(self.nums[i:j+1])
+        return result
+    
+"""
+Use Binary Index Tree. Overall O(nlogn).
+Populate tree: O(nlogn). Each lowbit iteration is O(logn). But we only do this once.
+Update: O(logn) due to the lowbit operation.
+Sum: O(logn)
+
+Population of tree can be improved to O(n).
+Notice that for 1, 2, 4, 8...they are just the accumulative sum.
+And for 3, 5, 7...they are the accumulative sum - sum[i-1].
+And for 6...they are the accumulative sum[i] - sum[i-2], or sum[i - (i & -i)]
+So we can first get the accumulative sum, then subtract sum[i - (i & -i)] to get BIT[i].
+"""
+class NumArray:
+
+    def __init__(self, nums: List[int]):
+        self.arr = nums
+        self.BIT = [0 for i in range(len(nums) + 1)]
+        self.populateBIT()
+        
+    def populateBIT(self):
+        # for i, num in enumerate(self.arr):
+        #     i += 1
+        #     while i < len(self.BIT):
+        #         self.BIT[i] += num
+        #         i += (i & -i)
+            # self.update(i, num)
+        AccSum = [0]
+        for num in self.arr:
+            AccSum.append(AccSum[-1] + num)
+        for i in range(1, len(AccSum)):
+            self.BIT[i] =AccSum[i] - AccSum[i - (i & -i)]
+
+    def update(self, i: int, val: int) -> None:
+        diff = val - self.arr[i]
+        self.arr[i] = val
+        i += 1
+        while i < len(self.BIT):
+            self.BIT[i] += diff
+            i += (i & -i)
+
+    def sumRange(self, i: int, j: int) -> int:
+        #Sum up to j - sum up to i
+        return self.getSum(j) - self.getSum(i - 1)
+        
+    def getSum(self, k):
+        result = 0
+        k += 1
+        while k > 0:
+            result += self.BIT[k]
+            k -= (k & -k)
+        return result
+
+
+# Your NumArray object will be instantiated and called as such:
+# obj = NumArray(nums)
+# obj.update(i,val)
+# param_2 = obj.sumRange(i,j)
