@@ -1,0 +1,70 @@
+"""
+Remove the minimum number of invalid parentheses in order to make the input string valid. Return all possible results.
+Note: The input string may contain letters other than the parentheses ( and ).
+Example 1:
+Input: "()())()"
+Output: ["()()()", "(())()"]
+Example 2:
+Input: "(a)())()"
+Output: ["(a)()()", "(a())()"]
+Example 3:
+Input: ")("
+Output: [""]
+"""
+
+"""
+Runtime: 60 ms, faster than 74.52% of Python3 online submissions for Remove Invalid Parentheses.
+Memory Usage: 12.7 MB, less than 100.00% of Python3 online submissions for Remove Invalid Parentheses.
+
+O(2^n) in the worst case, e.g. "(((((((("
+Since we are only pruning the recursion tree, the actual time complexity depends on each case. Best case is no better than O(n).
+Space complexity is O(n) since the depth of the recursion tree is linear to the length of the input string.
+
+Cannot solve this using DP because DP relies on incremental states where the states are valid. In this case, an invalid
+intermediate state like ()) can lead to a valid state like ( + ()).
+
+Another idea: Maybe an O(n) solution.
+Remove closing brackets first, then reverse the string and remove opening brackets.
+e.g. If we have 2 unmatched closing brackets in a row, removing either one will achieve the same result.
+Only if we remove an earlier closing bracket separated by an opening bracket, will we get a different result.
+So maybe we can just count the number of segments of closing brackets there are (x), and how many different we need to remove (k),
+and the result will be x choose k. We can use a set to keep track of segments we want to keep, then concatnate them at the end.
+"""
+
+class Solution:
+    def removeInvalidParentheses(self, s: str) -> List[str]:
+                
+        def rec(i, lCount, rCount, lRemoved, rRemoved, current):
+            if i == len(s):
+                if lRemoved == lToRemove and rRemoved == rToRemove:
+                    results.add(current)
+                return
+                
+            if s[i] != "(" and s[i] != ")":
+                rec(i + 1, lCount, rCount, lRemoved, rRemoved, current+s[i])
+            elif s[i] == "(":
+                if lRemoved < lToRemove:
+                    rec(i+1, lCount, rCount, lRemoved+1, rRemoved, current)
+                rec(i+1, lCount+1, rCount, lRemoved, rRemoved, current+s[i])
+            else:
+                if rRemoved < rToRemove:
+                    rec(i+1, lCount, rCount, lRemoved, rRemoved+1, current)
+                if lCount > 0:
+                    rec(i+1, lCount-1, rCount, lRemoved, rRemoved, current+s[i])
+                
+        lToRemove, rToRemove = self.countRemove(s)
+        results = set()
+        rec(0, 0, 0, 0, 0, "")
+        return list(results)
+        
+    def countRemove(self, s):
+        l, r = 0, 0
+        for char in s:
+            if char == "(":
+                l += 1
+            elif char == ")":
+                if l > 0:
+                    l -= 1
+                else:
+                    r += 1
+        return l, r
