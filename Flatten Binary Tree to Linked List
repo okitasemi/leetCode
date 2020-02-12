@@ -1,0 +1,64 @@
+"""
+Given a binary tree, flatten it to a linked list in-place.
+For example, given the following tree:
+    1
+   / \
+  2   5
+ / \   \
+3   4   6
+The flattened tree should look like:
+1
+ \
+  2
+   \
+    3
+     \
+      4
+       \
+        5
+         \
+          6
+"""
+
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+"""
+O(n) time since we go through every node constant number of times.
+O(n) space because of call stack.
+"""
+class Solution:
+    def flattenRec(self, root: TreeNode) -> None:
+        if not root:
+            return
+        if not root.right:
+            root.right = root.left
+        elif root.left:
+            leaf = root.left
+            while leaf.right:
+                leaf = leaf.right
+            leaf.right = root.right
+            root.right = root.left
+        root.left = None
+        self.flatten(root.right)
+
+"""
+Without recursion.
+O(n) time.
+O(1) space.
+"""
+    def flatten(self, root):
+        while root:
+            if root.left:
+                leaf = root.left
+                while leaf.right:
+                    leaf = leaf.right
+                leaf.right = root.right
+                root.right = root.left
+                root.left = None
+            root = root.right
+            
