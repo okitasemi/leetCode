@@ -1,0 +1,91 @@
+"""
+Merge k sorted linked lists and return it as one sorted list. Analyze and describe its complexity.
+Example:
+Input:
+[ 1->4->5, 1->3->4, 2->6 ]
+Output: 1->1->2->3->4->4->5->6
+"""
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+"""
+Runtime: 100 ms, faster than 81.38% of Python3 online submissions for Merge k Sorted Lists.
+Memory Usage: 16.3 MB, less than 86.36% of Python3 online submissions for Merge k Sorted Lists.
+
+n = total number of nodes, k = number of lists.
+O(nlogk) time, since we have to add each node once, and each heap op takes logk time.
+O(k) space for the heap.
+
+Use a min heap to keep track of the head of the linked lists. 
+Pop off the smallest one, then add the next linked list node to the heap.
+However we have to use (lst.val, idx) instead of (lst.val, lst) because
+ListNodes cannot be compared by the heap.
+"""
+
+class Solution:
+    def mergeKListsQ(self, lists: List[ListNode]) -> ListNode:    
+        q = [(lst.val, idx) for idx, lst in enumerate(lists) if lst]
+        heapq.heapify(q)
+        
+        result = ListNode(None)
+        current = result
+        while q:
+            val, idx = heapq.heappop(q)
+            current.next = lists[idx]
+            current = current.next
+            lists[idx] = lists[idx].next
+            if lists[idx]:
+                heapq.heappush(q, (lists[idx].val, idx))
+        
+        return result.next
+    
+    
+    """
+    Runtime: 120 ms, faster than 52.38% of Python3 online submissions for Merge k Sorted Lists.
+    Memory Usage: 16.1 MB, less than 100.00% of Python3 online submissions for Merge k Sorted Lists.
+    
+    n = total number of nodes, k = number of lists.
+    
+    Another method is to merge one list at a time. This will take k-1 merges.
+    This will take O(nk) time, because we merge half of the nodes k times.
+    
+    But we can improve this by merge every 2 lists, then pair up the results.
+    After first pairing, k lists become k/2 lists, then k/4, k/8...
+    So after all we merge each node logk times.
+    O(nlogk) time. 
+    O(1) space.
+    
+    """
+    def mergeKLists(self, lists):
+        if not lists:
+            return
+        i = 1
+        while i < len(lists):
+            for j in range(0, len(lists) - i, i * 2):
+                lists[j] = self.merge2Lists(lists[j], lists[j + i])
+            i *= 2
+        return lists[0]
+        
+    def merge2Lists(self, l1, l2):
+        head = ListNode(None)
+        current = head
+        while l1 and l2:
+            if l1.val <= l2.val:
+                current.next = l1
+                l1 = l1.next
+            else:
+                current.next = l2
+                l2 = l2.next
+            current = current.next
+        if not l1:
+            current.next = l2
+        else:
+            current.next = l1
+        return head.next
+            
+    
+        
