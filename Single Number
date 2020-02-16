@@ -4,8 +4,8 @@
 
 -----------------------
 Ver 1:  Use a set
-Pros: Short code. Time complexity O(n)
-Cons: Space complexity O(n)
+Since all but 1 number appears twice, sum(unique nums)*2 - sum(nums) = single num
+O(n) time. O(n) space for using set.
 -----------------------
 class Solution(object):
     def singleNumber(self, nums):
@@ -18,8 +18,10 @@ class Solution(object):
 
 -----------------------
 Ver 2:  Use ^ Binary XOR
-Pros: Time complexity O(n), Space complexity O(1)
-Cons: No cons. I just always forget about this method...
+We know that x ^ x = 0, and (x^y) ^ (x^y) = 0, and so on.
+Because each bit can only be 0 or 1, the order of the numbers do not matter.
+If we take the xor of all numbers, the result must be the single number.
+O(n) time. O(1) space.
 -----------------------
 class Solution(object):
     def singleNumber(self, nums):
