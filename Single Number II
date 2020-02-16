@@ -63,7 +63,82 @@ class Solution(object):
             return int(nResult, 2)
             
           
-# Runtime: 208 ms, faster than 6.00% of Python online submissions for Single Number II.
-# Memory Usage: 13 MB, less than 90.91% of Python online submissions for Single Number II.
+"""
+New attempt with explanations
+02/16/2020
+"""  
 
+class Solution:
+    """
+    We can keep track of the occurrence of numbers by counting the set bits.
+    For example, we can allocate an array of len 32.
+    If 1 occurs 3 times, there will be +3 counts in the 31st bucket.
+    If 3 occurs 3 times, there will be + 3 counts in the 30th and 31st buckets.
+    For all numbers that appear 3 times, the counts in all buckets should be divisible by 3. If we count the bits for all numbers, and compute modulo 3 for each, the only counts that remains would be from the number that occurs once.
+    We have to use 2 len 32 arrays, for positive and negative numbers. 
+    """
+    def singleNumberBins(self, nums: List[int]) -> int:
+        posBins = [0 for i in range(32)]
+        negBins = [0 for i in range(32)]
+        for num in nums:
+            if num >= 0:
+                self.updateBits(posBins, num)
+            if num < 0:
+                self.updateBits(negBins, num * -1)
+        
+        result = int("".join([str(bit % 3) for bit in negBins]), 2) * -1
+        if result == 0:
+            result = int("".join([str(bit % 3) for bit in posBins]), 2)
+        return result
+    
+    def updateBits(self, bins, num):
+        i = 31
+        while num:
+            bins[i] += num & 1
+            num >>= 1
+            i -= 1
+            
+    """
+The idea is still to count the number of set bits in each bucket.
+Instead of using an array, we can use an integer, which has 64 bits. 
+We can use each bit to represent if a number has occured (like in the Single Number I). 
+But since we need to keep track of count up to 3, we actually need more than 0 & 1 to keep track of the count.
+So we can use integer a & b (each has 64 bits), where each pair of bits represent the count of occurence.
+If a bit in b is set to 1, it means this bit has occured once. If a bit in a is set to 1, it means this bit has occured twice. If the same bit in a and b are set to 1, it means this bit has occued three times, in which case we can reset it to 0.
+
+Ex: Start out with a = 0, b = 0. 
+When we get 5 (0101), a = 0000, b = 0101, because 2nd and last bit appear once.
+Then when we get 6 (0110), a = 0100, b = 0011, because 3rd and last bit appear once, and 2nd bit appears twice.
+    
+We can make a truth table for state changes:
+a b  newBit  newA newB
+0 0  0        0    0
+0 1  0        0    1
+1 0  0        1    0
+1 1* 0        1    1 -> 0 0
+0 0  1        0    1
+0 1  1        1    0
+1 0  1        1    1 -> 0 0 because when we hit 3 we reset to 0
+Note that we don't need the case of 1 1 because it'll be changed to 0 0.
+With the truth table, we can derive a formulas for a, b.
+Since newA is 1 only when a = 1 and both b and newBit is 0, or a = 0 and both b and new Bit is 1, 
+newA = (a & ~b & ~newBit) | (~a & b & newBit).
+Since newB is 1 only when a = 0, b = 1, and newBit = 0, or a = 0, b = 0, and newBit = 1, 
+newB = (~a & b & ~newBit) | (~a & ~b & newBit).
+We can further simplify the formulas by consolidating the conditions.
+newB is 1 only when a is 0, and either b and newBit is 1, but not both.
+newB = ~a & (b ^ newBit)
+newA is 1 only when b & newBit are the same, and a is different from them.
+newA = ~(b ^ newBit) & (a ^ b)
+After updating a and b with all numbers, a should be all 0, and there should only be bits remaining in b. 
+So the answer would be b.
+    """
+    def singleNumber(self, nums):
+        a, b = 0, 0
+        for num in nums:
+            newA = ~(b ^ num) & (a ^ b)
+            newB = ~a & (b ^ num)
+            a = newA
+            b = newB
+        return b
         
