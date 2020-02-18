@@ -1,0 +1,50 @@
+"""
+Use quick sort. 
+Select a pivot point, say, the last element, and use that value to split the array in two.
+The goal is to make left half smaller than the pivot value, and the right half larger.
+Keep a marker index to separate the left and right half. At the beginning this index is 0.
+Iterate through the array, if an element is smaller than the pivot value, 
+move it to the left half (swap with marker index), then increment the marker index by 1.
+After we move all numbers smaller than the pivot value to the left, we put the pivot at
+where the marker is (swap with marker index). 
+Then we repeat this process for the left half, and the right half.
+
+Normally the average time complexity is O(nlogn), 
+But worst case is O(n^2). Because in the worst case, instead of splitting the array into two halves, we might split it into
+(n-1) and 1, meaning each time we only put sort 1 element. This means our recursion tree will have a height of n. 
+And at each level of the recursion (if we look at it horizontally), we go through the entire array once, needing O(n) time each.
+
+In this case, since in this case we only have k different numbers, the worst case is O(nk).
+Because each time we can at least sort 1 element, and there are only k different elements to be sorted, 
+the height of the recursion tree is k.
+"""
+class Solution:
+    """
+    @param colors: A list of integer
+    @param k: An integer
+    @return: nothing
+    """
+    def sortColors2(self, colors, k):
+        def quickSort(arr, low, high):
+            if low < high:
+                pivot = placePivot(arr, low, high)
+                quickSort(arr, low, pivot - 1)
+                quickSort(arr, pivot + 1, high)
+            
+        def placePivot(arr, low, high):
+            val = arr[high]
+            i = low
+            while i < high:
+                if arr[i] < val:
+                    swap(arr, i, low)
+                    low += 1 
+                i += 1 
+            swap(arr, high, low)
+            return low
+                        
+        def swap(arr, i, j):
+            temp = arr[i]
+            arr[i] = arr[j]
+            arr[j] = temp
+        
+        quickSort(colors, 0, len(colors) - 1)
