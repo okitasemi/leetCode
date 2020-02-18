@@ -1,0 +1,59 @@
+"""
+Given an array with n objects colored red, white or blue, sort them in-place so that objects of the same color are adjacent, 
+with the colors in the order red, white and blue.
+Here, we will use the integers 0, 1, and 2 to represent the color red, white, and blue respectively.
+Note: You are not suppose to use the library's sort function for this problem.
+
+Example:
+Input: [2,0,2,1,1,0]
+Output: [0,0,1,1,2,2]
+
+Follow up:
+A rather straight forward solution is a two-pass algorithm using counting sort.
+First, iterate the array counting number of 0's, 1's, and 2's, then overwrite array with total number of 0's, 1's, and 2's.
+Could you come up with a one-pass algorithm using only constant space?
+"""
+
+from collections import Counter
+
+class Solution:
+    """
+    Counting sort.
+    O(n) time to get count and re-write array.
+    O(1) space to keep count.
+    """
+    def sortColorsCount(self, nums: List[int]) -> None:
+        count = Counter(nums)
+        for i in range(count[0]):
+            nums[i] = 0
+        for j in range(count[1]):
+            nums[j + count[0]] = 1
+        for k in range(count[2]):
+            nums[k + count[0] + count[1]] = 2
+        return nums
+    
+    """
+    If num is 2, throw it to the back of the array.
+    If num is 0, throw it to the front of the front.
+    If num is 1, keep it.
+    In order to do it in place, we keep an index at the front and back of the array, and swap it with the number we encounter.
+    O(n) time. O(1) space.
+    """
+    def sortColors(self, nums: List[int]) -> None:
+        low, high, current = 0, len(nums) - 1, 0
+        while current <= high:
+            if nums[current] == 0:
+                self.swap(nums, current, low)
+                low += 1
+                current += 1
+            elif nums[current] == 1:
+                current += 1
+            else:
+                self.swap(nums, current, high)
+                high -= 1
+        return nums
+        
+    def swap(self, nums, i, j):
+        temp = nums[i]
+        nums[i] = nums[j]
+        nums[j] = temp
