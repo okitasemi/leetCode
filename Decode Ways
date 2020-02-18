@@ -1,0 +1,63 @@
+"""
+A message containing letters from A-Z is being encoded to numbers using the following mapping:
+'A' -> 1
+'B' -> 2
+...
+'Z' -> 26
+Given a non-empty string containing only digits, determine the total number of ways to decode it.
+
+Example 1:
+Input: "12"
+Output: 2
+Explanation: It could be decoded as "AB" (1 2) or "L" (12).
+
+Example 2:
+Input: "226"
+Output: 3
+Explanation: It could be decoded as "BZ" (2 26), "VF" (22 6), or "BBF" (2 2 6).
+"""
+
+class Solution:
+    """
+    Recursion with the help of memoization. 
+    With each eligible number, we consider it by itself, then consider it with the number after it.De
+    O(n) time, O(n) space for the memo and stack.
+    """
+    def numDecodingsRec(self, s: str) -> int:        
+        def countWays(i):
+            if i >= len(s):
+                return 1
+            if memo[i] != -1:
+                return memo[i]
+            
+            memo[i] = 0
+            num = int(s[i])
+            if 1 <= num <= 9:
+                memo[i] += countWays(i + 1)
+            if s[i] != "0" and i + 1 < len(s):
+                num = int(s[i: i+2])
+                if 10 <= num <= 26:
+                    memo[i] += countWays(i + 2)
+            return memo[i]
+        
+        if s[0] == "0":
+            return 0
+        memo = [-1 for i in range(len(s))]
+        return countWays(0)
+    
+    """
+    Runtime: 28 ms, faster than 83.31% of Python3 online submissions for Decode Ways.
+    Memory Usage: 12.8 MB, less than 100.00% of Python3 online submissions for Decode Ways.
+    
+    Derive a DP solution from the recursive solution.
+    O(n) time. O(n) space for the memo.
+    """
+    def numDecodingsDP(self, s):
+        memo = [0 for i in range(len(s))] + [1]
+        for i in range(len(s) - 1, -1, -1):
+            if "1" <= s[i] <= "9":
+                memo[i] += memo[i + 1]
+            if s[i] != "0" and i + 1 < len(s) and "10" <= s[i:i+2] <= "26":
+                memo[i] += memo[i + 2]
+        return memo[0]
+            
