@@ -1,0 +1,104 @@
+"""
+689. Two Sum IV - Input is a BST
+Given a binary search tree and a number n, find two numbers in the tree that sums up to n.
+
+Example1
+Input: {4,2,5,1,3}, 3
+Output: [1,2] (or [2,1])
+Explanation:
+binary search tree:
+    4
+   / \
+  2   5
+ / \
+1   3
+
+Example2
+Input: {4,2,5,1,3}, 5
+Output: [2,3] (or [3,2])
+
+Notice: Without any extra space.
+"""
+
+"""
+Definition of TreeNode:
+class TreeNode:
+    def __init__(self, val):
+        self.val = val
+        self.left, self.right = None, None
+"""
+
+class Solution:
+    """
+    @param: : the root of tree
+    @param: : the target sum
+    @return: two numbers from tree which sum is n
+    """
+
+    """
+    Search for a number smaller than the target sum. Only focus on that subtree.
+    For each node in that subtree, search for its compliment in the subtree.
+    O(nlogn) time to search for pair.
+    O(logn) space for the recursive call stack.
+    """
+    def twoSum(self, root, n):
+        
+        def findPairs(node, currentNode, n):
+            if currentNode:
+                compliment = findNum(node, n - currentNode.val)
+                if compliment:
+                    return [currentNode.val, compliment]
+                else:
+                    result = findPairs(node, currentNode.left, n)
+                    if not result:
+                        result = findPairs(node, currentNode.right, n)
+                return result
+                    
+        def findNum(node, x):
+            while node:
+                if x < node.val:
+                    node = node.left
+                elif x > node.val:
+                    node = node.right
+                else:
+                    return x
+            return None
+            
+        result = None
+        current = root
+        while current and current.val > n:
+            current = current.left
+        if current:
+            result = findPairs(current, current, n)
+        return result
+                
+    """
+    Find the largest number smaller than the target sum.
+    Flatten that subtree into an array. Then search the two numbers.
+    O(n) time to go through every node. O(n) space for the array.
+    """
+    def twoSumFlatten(self, root, n):
+        
+        def inOrder(node):
+            if node:
+                inOrder(node.left)
+                nodeList.append(node.val)
+                inOrder(node.right)
+                
+        node = root
+        while node and node.val > n:
+            node = node.left
+        nodeList = []
+        inOrder(node)
+        
+        i, j = 0, len(nodeList) - 1 
+        while i < j:
+            if nodeList[i] + nodeList[j] < n:
+                i += 1 
+            elif nodeList[i] + nodeList[j] > n:
+                j -= 1 
+            else:
+                return [nodeList[i], nodeList[j]]
+        return 
+                
+        
