@@ -1,0 +1,68 @@
+"""
+Given a directed, acyclic graph of N nodes.  Find all possible paths from node 0 to node N-1, and return them in any order.
+The graph is given as follows:  the nodes are 0, 1, ..., graph.length - 1.  
+graph[i] is a list of all nodes j for which the edge (i, j) exists.
+Example:
+Input: [[1,2], [3], [3], []] 
+Output: [[0,1,3],[0,2,3]] 
+Explanation: The graph looks like this:
+0--->1
+|    |
+v    v
+2--->3
+There are two paths: 0 -> 1 -> 3 and 0 -> 2 -> 3.
+Note:
+The number of nodes in the graph will be in the range [2, 15].
+You can print different paths in any order, but you should keep the order of nodes inside one path.
+"""
+
+from collections import deque
+class Solution:
+    """
+    Use BFS. Allocate an array where A[i] = parent of Node i.
+    Put first node in a queue. Pop from front of queue.
+    For each popped node, get all neighbors, update their parent info, then append them to queue.
+    Then, from node N-1, use the parent array to get all paths.   
+    Time: O(E) time for BFS, O(V*E) time for finding all path.
+    Space: O(E) for parent array, O(E) for queue, and O(V) for recursive stack.
+    
+    Runtime: 108 ms, faster than 58.72% of Python3 online submissions for All Paths From Source to Target.
+Memory Usage: 14.4 MB, less than 100.00% of Python3 online submissions for All Paths From Source to Target.
+    """
+    def allPathsSourceTargetBFS(self, graph: List[List[int]]) -> List[List[int]]:
+        parent = [set() for i in range(len(graph))]
+        de = deque([0])
+        while de:
+            popped = de.popleft()
+            for node in graph[popped]:
+                parent[node].add(popped)
+                de.append(node)
+        result = []
+        def rec(i, path):
+            if i == 0:
+                result.append(path)
+            for p in parent[i]:
+                rec(p, [p] + path)
+                
+        rec(len(graph) - 1, [len(graph) - 1])
+        return result
+        
+    """
+    DFS.
+    Simply go through each path, only append it to result if it reaches target.
+    Time: O(V*E) since we have to go through all paths
+    Space: O(V) for recursive stack
+    
+    Runtime: 100 ms, faster than 90.57% of Python3 online submissions for All Paths From Source to Target.
+Memory Usage: 14.3 MB, less than 100.00% of Python3 online submissions for All Paths From Source to Target.
+    """
+    def allPathsSourceTarget(self, graph: List[List[int]]) -> List[List[int]]:
+        
+        def DFS(i, path):
+            if i == len(graph) - 1:
+                result.append(path)
+            for node in graph[i]:
+                DFS(node, path + [node])
+        result = []
+        DFS(0, [0])
+        return result
