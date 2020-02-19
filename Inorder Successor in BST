@@ -1,0 +1,81 @@
+"""
+Inorder Successor in BST
+Given a binary search tree (See Definition) and a node in it, find the in-order successor of that node in the BST.
+If the given node has no in-order successor in the tree, return null.
+
+Example 1:
+Input: {1,#,2}, node with value 1
+Output: 2
+Explanation:
+  1
+   \
+    2
+    
+Example 2:
+Input: {2,1,3}, node with value 1
+Output: 2
+Explanation: 
+    2
+   / \
+  1   3
+Binary Tree Representation
+
+Challenge: O(h), where h is the height of the BST.
+Notice: It's guaranteed p is one node in the given tree. (You can directly compare the memory address to find p)
+"""
+
+"""
+Definition for a binary tree node.
+class TreeNode(object):
+    def __init__(self, x):
+        self.val = x
+        self.left = None
+        self.right = None
+"""
+class Solution:
+    """
+    @param: root: The root of the BST.
+    @param: p: You need find the successor node of p.
+    @return: Successor of p.
+    """
+    
+    """
+    Use in order traversal and a global variable to note whether the target is found.
+    If target is found, the next node in the traversal would be the successor.
+    Set the found flag to be false and return.
+    O(n) time to go through every node. O(logn) space for the call stack.
+    """
+    def inorderSuccessorOld(self, root, p):
+        
+        def inOrder(node):
+            if node:
+                inOrder(node.left)
+                if self.found:
+                    self.next = node
+                    self.found = False
+                    return
+                if node.val == p.val:
+                    self.found = True
+                inOrder(node.right)
+                
+        self.found = False
+        self.next = None
+        inOrder(root)
+        return self.next
+        
+    """
+    Another way to think about it:
+    P's successor is basically the smallest node larger than P.
+    If current node <= p, go to right, because the left branch is out of consideration.
+    If current node > p, go to left, and find a smaller node that's still larger than p.
+    If left branch has none, then this current node is the smallest node larger than P.
+    O(logn) time since we only go through the height of the tree.
+    O(logn) space for call stack.
+    """
+    def inorderSuccessor(self, root, p):
+        if not root:
+            return None
+        if root.val <= p.val:
+            return self.inorderSuccessor(root.right, p)
+        else:
+            return self.inorderSuccessor(root.left, p) or root
