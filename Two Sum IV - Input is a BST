@@ -41,7 +41,7 @@ class Solution:
     O(nlogn) time to search for pair.
     O(logn) space for the recursive call stack.
     """
-    def twoSum(self, root, n):
+    def twoSumOld(self, root, n):
         
         def findPairs(node, currentNode, n):
             if currentNode:
@@ -101,4 +101,41 @@ class Solution:
                 return [nodeList[i], nodeList[j]]
         return 
                 
+    """
+    Think of it as finding two numbers in an array. 
+    We can start in the middle and span to both sides. 
+    In the case of a BST, we need to find the successor and predecessor.
+    Each search takes O(logn). So overall it's O(nlogn)
+    """
+    def twoSum(self, root, n):
         
+        def getSuccessor(node, target):
+            if not node:
+                return None
+            if node.val <= target:
+                return getSuccessor(node.right, target)
+            else:
+                return getSuccessor(node.left, target) or node
+                
+        def getPredecessor(node, target):
+            if not node:
+                return None 
+            if node.val >= target:
+                return getPredecessor(node.left, target)
+            else:
+                return getPredecessor(node.right, target) or node
+                
+        nodeA, nodeB = root, root
+        while nodeA and nodeA.left:
+            nodeA = nodeA.left
+        while nodeB and nodeB.right:
+            nodeB = nodeB.right
+            
+        while nodeA and nodeB and nodeA.val < nodeB.val:
+            if nodeA.val + nodeB.val < n:
+                nodeA = getSuccessor(root, nodeA.val)
+            elif nodeA.val + nodeB.val > n:
+                nodeB = getPredecessor(root, nodeB.val)
+            else:
+                return [nodeA.val, nodeB.val]
+        return None
