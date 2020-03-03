@@ -1,0 +1,54 @@
+"""
+Given a word list, find the length of shortest transformation sequence from beginWord to endWord, such that:
+1. Only one letter can be changed at a time.
+2. Each transformed word must exist in the word list. 
+3. BeginWord is not in the word list
+
+Note:
+Return 0 if there is no such transformation sequence.
+All words have the same length.
+All words contain only lowercase alphabetic characters.
+You may assume no duplicates in the word list.
+You may assume beginWord and endWord are non-empty and are not the same.
+
+Ex:
+Input:
+beginWord = "hit",
+endWord = "cog",
+wordList = ["hot","dot","dog","lot","log","cog"]
+
+Output: 5
+Explanation: "hit" -> "hot" -> "dot" -> "dog" -> "cog"
+"""
+
+"""
+Construct an adjancency map, with possible transformations as keys.
+Then use BFS. 
+O(n*len(word)) space since each word have len(word) number of possible transformations.
+O(n*len(word)) time since we could visit every word, and for each word we look at len(word) number of possible transformations.
+
+"""
+from collections import defaultdict, deque
+class Solution:
+    def ladderLength(self, beginWord: str, endWord: str, wordList: List[str]) -> int:
+        wordMap = defaultdict(list)
+        for word in wordList:
+            for i in range(len(beginWord)):
+                key = word[:i] + "*" + word[i+1:]
+                wordMap[key].append(word)
+                
+        visited = { beginWord: True}
+        q = deque([(beginWord, 1)])
+        while q:
+            current, rank = q.popleft()
+            for i in range(len(current)):
+                newWord = current[:i] + "*" + current[i+1:] 
+                for word in wordMap[newWord]:
+                    if word == endWord:
+                        return rank + 1
+                    if word not in visited:
+                        visited[word] = True
+                        q.append((word, rank + 1))
+        return 0
+                    
+            
