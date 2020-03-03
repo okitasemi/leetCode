@@ -1,0 +1,75 @@
+"""
+Given s1, s2, s3, find whether s3 is formed by the interleaving of s1 and s2.
+
+Example 1:
+Input: s1 = "aabcc", s2 = "dbbca", s3 = "aadbbcbcac"
+Output: true
+
+Example 2:
+Input: s1 = "aabcc", s2 = "dbbca", s3 = "aadbbbaccc"
+Output: false
+"""
+
+class Solution:
+
+"""
+Recursion. 
+Basically, we check each character in s3 against s1 and s2, in order.
+Whenever we find a matching character in s1 or s2, we check the remainder substring.
+If we find matching characters in both s1 and s2, we need to explore both options.
+Since at each character we have 2 choices (consider it a match or not), the worst case time complexity is O(2^(n+m)).
+Space complexity is O(n+m), height of the recursion call stack.
+"""
+    def isInterleaveRec(self, s1: str, s2: str, s3: str) -> bool:
+        if len(s1) == 0:
+            return s2 == s3
+        if len(s2) == 0:
+            return s1 == s3
+        
+        return (s1[0] == s3[0] and self.isInterleave(s1[1:], s2, s3[1:])) \
+                or (s2[0] == s3[0] and self.isInterleave(s1, s2[1:], s3[1:]))
+    
+"""
+We can rewrite the recursion solution with Dynamic Programming.
+The tricky part is generating initial states.
+O(n*m) time. O(n*m) space.
+"""
+    def isInterleaveDP(self, s1, s2, s3):
+        if len(s1) + len(s2) != len(s3):
+            return False
+
+        memo = [[False for j in range(len(s2)+1)] for i in range(len(s1)+1)]
+        memo[len(s1)][len(s2)] = True
+        
+        for i in range(len(s1)-1, -1, -1):
+            memo[i][len(s2)] = s1[i] == s3[i+len(s2)] and memo[i+1][len(s2)]
+        for j in range(len(s2)-1, -1, -1):
+            memo[len(s1)][j] = s2[j] == s3[j+len(s1)] and memo[len(s1)][j+1]
+        
+        for i in range(len(s1)-1, -1, -1):
+            for j in range(len(s2)-1, -1, -1):
+                memo[i][j] = (s1[i] == s3[i+j] and memo[i+1][j]) \
+                                or (s2[j] == s3[i+j] and memo[i][j+1])
+        return memo[0][0]
+    
+"""
+Dynamic programming with less memory. Since for every new state we only need to look at two previous states.
+O(n*m) time. O(n) or O(m) space. We can improve further by comparing n & m and choose the smaller one as the memo.
+"""
+    def isInterleave(self, s1, s2, s3):
+        if len(s1) + len(s2) != len(s3):
+            return False
+        
+        memo = [False for i in range(len(s2) + 1)]
+        memo[-1] = True
+        for j in range(len(s2)-1, -1, -1):
+            memo[j] = s2[j] == s3[j+len(s1)] and memo[j+1]
+        
+        for i in range(len(s1)-1, -1, -1):
+            newMemo = [False for i in range(len(s2) + 1)]
+            newMemo[-1] = s1[i] == s3[i+len(s2)] and memo[-1]
+            for j in range(len(s2)-1, -1, -1):
+                newMemo[j] = (s2[j] == s3[i+j] and newMemo[j+1]) \
+                                or (s1[i] == s3[i+j] and memo[j])
+            memo = newMemo
+        return memo[0]
