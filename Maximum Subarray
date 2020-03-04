@@ -58,6 +58,17 @@ class Solution(object):
 
     # Runtime: 64 ms, faster than 83.45% of Python3 online submissions for Maximum Subarray.
     # Memory Usage: 13.4 MB, less than 95.93% of Python3 online submissions for Maximum Subarray.
+    """
+    If we iterate through the array, at every number, the maximum sum so far would be one of the following:
+    1. the previous sum without this number; or
+    2. the previous sum with this number; or
+    3. this number.
+    Notice that case 1 is redundant, because it would have been considered when we look at the previous number.
+    So we just have 2 cases: add new number to the previous sum, or discard the previous sum and start over with new number.
+    We can evaluate the sum for both cases, and choose the larger one.
+    Notice in case 3, we discard the previous sum, but we don't know if this sum happens to be the overall max.
+    So every time we update the current sum, we also update the overall max with the current sum. 
+    """
     def maxSubArray(self, nums: List[int]) -> int:
         maxSum, currentSum = float('-inf'), float('-inf')
         for num in nums:
